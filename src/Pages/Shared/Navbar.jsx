@@ -30,12 +30,17 @@ const Navbar = () => {
         </NavLink>
       </li>
 
-
-      <li>
-        <NavLink to="/items" className="hover:text-primary font-medium">
-          Items
+      {
+        user && 
+        <>
+        <li>
+        <NavLink to="/myItems" className="hover:text-primary font-medium">
+         My Items
         </NavLink>
       </li>
+
+        </>
+      }
     </>
   );
 
