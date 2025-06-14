@@ -24,21 +24,33 @@ const Navbar = () => {
         </NavLink>
       </li>
 
-       <li>
-        <NavLink to="/allItems" className="hover:text-primary font-medium">
-         All Items
-        </NavLink>
-      </li>
+      {/* for lost links, check roles as well */}
 
       {
         user && 
         <>
         <li>
-        <NavLink to="/myItems" className="hover:text-primary font-medium">
+        <NavLink to="/allRecovered" className="hover:text-primary font-medium">
          My Items
         </NavLink>
       </li>
 
+        </>
+      }
+      {/* for Found links, check roles as well */}
+      {
+        user && 
+        <>
+            <li>
+        <NavLink to="/addItems" className="hover:text-primary font-medium">
+        Add Lost and Found Items
+        </NavLink>
+      </li>
+            <li>
+        <NavLink to="/myItems" className="hover:text-primary font-medium">
+        Manage My Items
+        </NavLink>
+      </li>
         </>
       }
     </>

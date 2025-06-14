@@ -3,10 +3,12 @@ import RootLayOut from "../LayOuts/RootLayOut";
 import Home from "../Pages/Home/Home";
 import Register from "../Pages/Register/Register";
 import LogIn from "../Pages/LogIn/LogIn";
-import AllItems from "../Pages/AllItems/AllItems";
 import ItemDetails from "../Pages/ItemDetails/ItemDetails";
 import PrivateRoute from "../Routes/PrivateRoute";
 import MyRecoveries from "../AllRecovered/MyRecoveries";
+import AddLostFoundItem from "../AddLostFoundItem/AddLostFoundItem";
+import ManageMyItems from "../ManageMyItems/ManageMyItems";
+import ViewItems from "../ViewItems/ViewItems";
 
 const router = createBrowserRouter([
   {
@@ -24,14 +26,26 @@ const router = createBrowserRouter([
 
         },
         {
-          path: '/myItems',
+          path: '/allRecovered',
           element: <PrivateRoute><MyRecoveries></MyRecoveries></PrivateRoute>
         },
         {
-          path: '/allItems',
-          Component: AllItems
+          path: '/addItems',
+          element: <PrivateRoute><AddLostFoundItem></AddLostFoundItem></PrivateRoute>
 
         },
+        {
+          path: '/myItems',
+          element: <PrivateRoute><ManageMyItems></ManageMyItems></PrivateRoute>
+
+        },
+        {
+          path: '/recoveries/:item_id',
+          element: <PrivateRoute><ViewItems></ViewItems></PrivateRoute>,
+          loader: ({params}) => fetch(`http://localhost:3000/recoveries/item/${params.item_id}`)
+
+        },
+       
         {
           path: '/register',
           Component: Register
