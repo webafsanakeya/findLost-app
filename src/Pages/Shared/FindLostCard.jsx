@@ -7,10 +7,10 @@ const FindLostCard = ({ item }) => {
   return (
     <div className="border p-4 rounded shadow">
       <img
-        src={image || "/public/placeholder.jpg.jpg"}
+        src={image || "/placeholder.jpg"}
         onError={(e)=>{
           e.target.onError = null;
-          e.target.src = "/public/placeholder.jpg.jpg"
+          e.target.src = "/placeholder.jpg"
         }}
         alt={title}
         className="h-40 w-full object-cover rounded mb-2"
