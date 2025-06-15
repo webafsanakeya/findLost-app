@@ -1,6 +1,8 @@
 import React, { Suspense } from 'react';
 import Banner from './Banner';
 import FindLostItems from './FindLostItems';
+import BannerSlider from './BannerSlider';
+import Faq from '../Faq/Faq';
 
 const Home = () => {
 
@@ -12,6 +14,10 @@ const Home = () => {
          <Suspense fallback={'loading find lost items'}>
               <FindLostItems itemsPromise={itemsPromise}></FindLostItems>
          </Suspense>
+
+         <BannerSlider></BannerSlider>
+         <Faq></Faq>
+         
         </div>
     );
 };

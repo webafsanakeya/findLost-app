@@ -10,6 +10,8 @@ import AddLostFoundItem from "../AddLostFoundItem/AddLostFoundItem";
 import ManageMyItems from "../ManageMyItems/ManageMyItems";
 import ViewItems from "../ViewItems/ViewItems";
 import AllItems from "../Pages/AllItems/AllItems";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import Faq from "../Pages/Faq/Faq";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +61,16 @@ const router = createBrowserRouter([
         {
           path: '/logIn',
           Component: LogIn
+        },
+        {
+          path: '/faq',
+          Component: Faq
+
+        },
+        {
+          path: '*',
+          Component: ErrorPage
+
         }
     ]
   },
