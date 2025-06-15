@@ -1,12 +1,48 @@
-# React + Vite
+FindLost - Lost & Found Recovery App
+A web platform to report, find, and recover lost items. This application allows users to log in, post about lost/found items, and view recovery stats.
+Live Site:
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Purpose:
+- Help users recover lost items
+- Let users see their recovery history
+- Display real-time data with stats
+- Provide secure authentication and role management
 
-Currently, two official plugins are available:
+## Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔐 Firebase Authentication
+- 📦 Post Lost/Found Items
+- 🕵️ View Recovered Items
+- 📅 Filter by Recovered Date
+- 📊 Personal Recovery Dashboard
+- 🎨 Stylish UI with Tailwind & DaisyUI
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+| Category      | Tools/Tech                                
+|---------------|--------------------------------------------
+| Frontend      | React, Vite                                
+| Styling       | TailwindCSS, DaisyUI<Framer Motion                      |
+| Backend       | Node.js, Express.js, MongoDB,CORS               
+| Auth          | Firebase,JWT                                  
+| Alerts        | SweetAlert2                               
+| Date Handling | Moment.js, React-DatePicker               
+
+
+## NPM Packages Used
+
+- `firebase`
+- `axios`
+- `moment`
+- `react-datepicker`
+- `sweetalert2`
+- `react-router-dom`
+- `tailwindcss`
+- `daisyui`
+- `express`
+- `cors`
+- `dotenv`
+- `mongodb`
+
+---
+
