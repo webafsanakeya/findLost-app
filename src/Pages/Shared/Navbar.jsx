@@ -3,134 +3,88 @@ import { NavLink } from 'react-router';
 import { AuthContext } from '../../Contexts/AuthContext/AuthContext';
 
 const Navbar = () => {
+  const { user, logOutUser } = use(AuthContext);
 
-  const {user, logOutUser} = use(AuthContext);
-
-  const handleLogOut = () =>{
+  const handleLogOut = () => {
     logOutUser()
-    .then(()=>{
-      console.log('log out user');
-    })
-    .catch(error =>{
-      console.log(error);
-    })
-  }
+      .then(() => {
+        console.log('User logged out');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
-     const links = (
+  const navLinkStyle = ({ isActive }) =>
+    isActive
+      ? 'text-primary font-semibold border-b-2 border-primary transition duration-150'
+      : 'hover:text-primary transition duration-150';
+
+  const links = (
     <>
-      <li>
-        <NavLink to="/" className="hover:text-primary font-medium">
-          Home
-        </NavLink>
-      </li>
-
-      {/* for lost links, check roles as well */}
-
-      {
-        user && 
+      <li><NavLink to="/" className={navLinkStyle}>Home</NavLink></li>
+      {user && (
         <>
-        <li>
-        <NavLink to="/allRecovered" className="hover:text-primary font-medium">
-         My Items
-        </NavLink>
-      </li>
-
+          <li><NavLink to="/allRecovered" className={navLinkStyle}>My Items</NavLink></li>
+          <li><NavLink to="/addItems" className={navLinkStyle}>Add Lost & Found</NavLink></li>
+          <li><NavLink to="/myItems" className={navLinkStyle}>Manage My Items</NavLink></li>
         </>
-      }
-      {/* for Found links, check roles as well */}
-      {
-        user && 
-        <>
-            <li>
-        <NavLink to="/addItems" className="hover:text-primary font-medium">
-        Add Lost and Found Items
-        </NavLink>
-      </li>
-            <li>
-        <NavLink to="/myItems" className="hover:text-primary font-medium">
-        Manage My Items
-        </NavLink>
-      </li>
-        </>
-      }
+      )}
     </>
   );
 
-    
-    return (
-      <div className="navbar bg-white shadow-md px-4 sticky top-0 z-50">
+  return (
+    <div className="navbar bg-white shadow-md sticky top-0 z-50 px-4 py-2">
       <div className="navbar-start">
         <div className="dropdown">
-          <div tabIndex={0} className="btn btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {" "}
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              />{" "}
+          <label tabIndex={0} className="btn btn-ghost lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+              viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round"
+                strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-          </div>
-          <ul
-            tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-          >
+          </label>
+          <ul tabIndex={0}
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-3 shadow bg-white rounded-box w-52">
             {links}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl font-bold text-primary">FindLost</a>
+        <NavLink to="/" className="btn btn-ghost normal-case text-2xl font-bold text-primary">
+          🔍 FindLost
+        </NavLink>
       </div>
+
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 gap-2">{links}</ul>
+        <ul className="menu menu-horizontal px-1 gap-4">{links}</ul>
       </div>
-      <div className="navbar-end gap-4">
+
+      <div className="navbar-end gap-3">
         {user ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {user.photoURL ? (
-              <div
-                className="tooltip tooltip-bottom"
-                data-tip={user.displayName || "User"}
-              >
-                <img
-                  src={user.photoURL}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full border border-primary cursor-pointer"
-                />
+              <div className="tooltip tooltip-bottom" data-tip={user.displayName || 'User'}>
+                <img src={user.photoURL} alt="Profile"
+                  className="w-10 h-10 rounded-full border-2 border-primary object-cover" />
               </div>
             ) : (
               <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg">
                 {user.displayName?.charAt(0)}
               </div>
             )}
-
-            <span className="font-semibold hidden sm:block">
-              {user.displayName}
-            </span>
-            <button onClick={handleLogOut} className="btn btn-outline btn-sm">
-              Log Out
+            <span className="font-medium hidden sm:inline">{user.displayName}</span>
+            <button onClick={handleLogOut} className="btn btn-sm btn-outline">
+              Logout
             </button>
           </div>
         ) : (
           <div className="flex gap-2">
-            <NavLink to="/register" className="btn btn-sm btn-outline">
-              Register
-            </NavLink>
-            <NavLink to="/logIn" className="btn btn-sm btn-primary">
-              Login
-            </NavLink>
+            <NavLink to="/register" className="btn btn-outline btn-sm">Register</NavLink>
+            <NavLink to="/logIn" className="btn btn-primary btn-sm">Login</NavLink>
           </div>
         )}
       </div>
     </div>
-
-    );
+  );
 };
 
 export default Navbar;

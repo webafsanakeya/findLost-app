@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import FindLostCard from '../Shared/FindLostCard';
-import { Link } from 'react-router'; // ❗ check this line below
+import { Link } from 'react-router';
+
 
 const FindLostItems = () => {
   const [items, setItems] = useState([]);
@@ -11,9 +12,9 @@ const FindLostItems = () => {
         const res = await fetch('http://localhost:3000/items');
         const data = await res.json();
 
-        // ✅ Sort without slicing
+       
         const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setItems(sorted);
+        setItems(sorted.slice(0,6));
       } catch (error) {
         console.error('Failed to fetch items:', error);
       }
@@ -29,6 +30,9 @@ const FindLostItems = () => {
         {items.map(item => (
           <FindLostCard key={item._id} item={item} />
         ))}
+      </div>
+      <div className='mt-10'>
+       <Link to='/allItems'> <button className='btn btn-primary text-xl px-6 py-3'>See All Posts</button></Link>
       </div>
     </div>
   );

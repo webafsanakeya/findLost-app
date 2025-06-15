@@ -9,6 +9,7 @@ import MyRecoveries from "../AllRecovered/MyRecoveries";
 import AddLostFoundItem from "../AddLostFoundItem/AddLostFoundItem";
 import ManageMyItems from "../ManageMyItems/ManageMyItems";
 import ViewItems from "../ViewItems/ViewItems";
+import AllItems from "../Pages/AllItems/AllItems";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,11 @@ const router = createBrowserRouter([
         {
           path: '/addItems',
           element: <PrivateRoute><AddLostFoundItem></AddLostFoundItem></PrivateRoute>
+
+        },
+        {
+          path: '/allItems',
+          Component: AllItems
 
         },
         {
