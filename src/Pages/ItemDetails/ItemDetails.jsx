@@ -16,11 +16,14 @@ const ItemDetails = () => {
 
   const handleRecoverySubmit = async (recoveryData) => {
     try {
-      const res = await fetch("http://localhost:3000/recoveries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(recoveryData),
-      });
+      const res = await fetch(
+        "https://find-lost-server-plum.vercel.app/recoveries",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(recoveryData),
+        }
+      );
 
       if (!res.ok) throw new Error("Failed to submit recovery");
       alert("Recovery info submitted successfully!");

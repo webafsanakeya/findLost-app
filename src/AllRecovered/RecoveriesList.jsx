@@ -1,9 +1,9 @@
-import React, { use, useState } from "react";
+import React, { useState, use } from "react";
 import ItemRecoveriesRows from "./ItemRecoveriesRows";
 
 const RecoveriesList = ({ myRecoveriesPromise }) => {
   const recoveries = use(myRecoveriesPromise);
-   const [isTableLayout, setIsTableLayout] = useState(true);
+  const [isTableLayout, setIsTableLayout] = useState(true);  // default to table
 
   if (!Array.isArray(recoveries)) {
     return <p>Something went wrong loading recoveries.</p>;
@@ -16,11 +16,12 @@ const RecoveriesList = ({ myRecoveriesPromise }) => {
       </h3>
       <h3>Total Recoveries: {recoveries.length}</h3>
 
-      {/* toggle button */}
-
-      <button onClick={() => setIsTableLayout(!isTableLayout)}  className="btn btn-primary my-4">
+      {/* Layout toggle button */}
+      <button
+        onClick={() => setIsTableLayout(!isTableLayout)}
+        className="btn btn-primary my-4"
+      >
         {isTableLayout ? "Show Cards" : "Show Table"}
-        
       </button>
 
       {/* Conditionally render table or cards */}

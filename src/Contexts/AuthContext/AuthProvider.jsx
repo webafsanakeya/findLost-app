@@ -43,17 +43,18 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
       if (currentUser?.email) {
         const userData = { email: currentUser.email };
-        axios.post('http://localhost:3000/jwt', userData, {
-            withCredentials: true
-        })
-        .then(res => {
+        axios
+          .post("https://find-lost-server-plum.vercel.app/jwt", userData, {
+            withCredentials: true,
+          })
+          .then((res) => {
             console.log(res.data);
-        })
-        .catch(error =>{
+          })
+          .catch((error) => {
             console.log(error);
-        })
+          });
       }
-      console.log("user in the auth state changed", currentUser);
+      // console.log("user in the auth state changed", currentUser);
     });
     return () => {
       unSubscribe();

@@ -18,61 +18,78 @@ const router = createBrowserRouter([
     path: "/",
     Component: RootLayOut,
     children: [
-        {
-            index: true,
-            Component: Home
-        },
-        {
-          path: '/items/:id',
-          element: <PrivateRoute><ItemDetails></ItemDetails></PrivateRoute>,
-          loader: ({params}) => fetch(`http://localhost:3000/items/${params.id}`)
+      {
+        index: true,
+        Component: Home,
+      },
+      {
+        path: "/items/:id",
+        element: (
+          <PrivateRoute>
+            <ItemDetails></ItemDetails>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`https://find-lost-server-plum.vercel.app/items/${params.id}`),
+      },
+      {
+        path: "/allRecovered",
+        element: (
+          <PrivateRoute>
+            <MyRecoveries></MyRecoveries>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/addItems",
+        element: (
+          <PrivateRoute>
+            <AddLostFoundItem></AddLostFoundItem>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/allItems",
+        Component: AllItems,
+      },
+      {
+        path: "/myItems",
+        element: (
+          <PrivateRoute>
+            <ManageMyItems></ManageMyItems>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/recoveries/:item_id",
+        element: (
+          <PrivateRoute>
+            <ViewItems></ViewItems>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(
+            `https://find-lost-server-plum.vercel.app/recoveries/item/${params.item_id}`
+          ),
+      },
 
-        },
-        {
-          path: '/allRecovered',
-          element: <PrivateRoute><MyRecoveries></MyRecoveries></PrivateRoute>
-        },
-        {
-          path: '/addItems',
-          element: <PrivateRoute><AddLostFoundItem></AddLostFoundItem></PrivateRoute>
-
-        },
-        {
-          path: '/allItems',
-          Component: AllItems
-
-        },
-        {
-          path: '/myItems',
-          element: <PrivateRoute><ManageMyItems></ManageMyItems></PrivateRoute>
-
-        },
-        {
-          path: '/recoveries/:item_id',
-          element: <PrivateRoute><ViewItems></ViewItems></PrivateRoute>,
-          loader: ({params}) => fetch(`http://localhost:3000/recoveries/item/${params.item_id}`)
-
-        },
-       
-        {
-          path: '/register',
-          Component: Register
-        },
-        {
-          path: '/logIn',
-          Component: LogIn
-        },
-        {
-          path: '/faq',
-          Component: Faq
-
-        },
-        {
-          path: '*',
-          Component: ErrorPage
-
-        }
-    ]
+      {
+        path: "/register",
+        Component: Register,
+      },
+      {
+        path: "/logIn",
+        Component: LogIn,
+      },
+      {
+        path: "/faq",
+        Component: Faq,
+      },
+      {
+        path: "*",
+        Component: ErrorPage,
+      },
+    ],
   },
 ]);
 

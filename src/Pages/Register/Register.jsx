@@ -18,7 +18,7 @@ const Register = () => {
     const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log(email, password);
+    // console.log(email, password);
     // console.log(email, password);
    
     // create user in firebase

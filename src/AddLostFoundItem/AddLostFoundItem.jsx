@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 const AddLostFoundItem = () => {
   const { user } = UseAuth();
-  const [photoUrl, setPhotoUrl] = useState('')
+  const [photoUrl, setPhotoUrl] = useState("");
 
   const handleAddPost = (e) => {
     e.preventDefault();
@@ -13,14 +13,14 @@ const AddLostFoundItem = () => {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    if(user?.photoUrl){
-        data.user.userPhoto = user.photoUrl;
+    if (user?.photoUrl) {
+      data.user.userPhoto = user.photoUrl;
     }
     //
     console.log(data);
     // save post to the database
     axios
-      .post("http://localhost:3000/items", data)
+      .post("https://find-lost-server-plum.vercel.app/items", data)
       .then((res) => {
         if (res.data.insertedId) {
           Swal.fire({
@@ -31,7 +31,7 @@ const AddLostFoundItem = () => {
             timer: 1500,
           });
           form.reset();
-          setPhotoUrl('');
+          setPhotoUrl("");
         }
       })
       .catch((error) => {

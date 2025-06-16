@@ -1,15 +1,14 @@
-import axios from 'axios';
-import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import Swal from 'sweetalert2';
+import axios from "axios";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Swal from "sweetalert2";
 
-const RecoveryModal = ({itemId, user, onClose}) => {
+const RecoveryModal = ({ itemId, user, onClose }) => {
+  const [recoveredLocation, setRecoveredLocation] = useState("");
+  const [recoveredDate, setRecoveredDate] = useState(new Date());
 
-  const [recoveredLocation, setRecoveredLocation] = useState('');
-   const [recoveredDate, setRecoveredDate] = useState(new Date());
-
-   const handleSubmit = async (e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const recoveryData = {
       itemId,
@@ -18,37 +17,42 @@ const RecoveryModal = ({itemId, user, onClose}) => {
       recoveredBy: {
         name: user?.displayName,
         email: user?.email,
-        photoURL: user?.photoURL
-      }
+        photoURL: user?.photoURL,
+      },
     };
-      try {
-    const res = await axios.post('http://localhost:3000/recoveries', recoveryData);
+    try {
+      const res = await axios.post(
+        "https://find-lost-server-plum.vercel.app/recoveries",
+        recoveryData
+      );
 
-    if (res.data.insertedId) {
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Your recovery info has been saved",
-        showConfirmButton: false,
-        timer: 1500
-      });
-      onClose(); // Close the modal
-    } else {
-      throw new Error("Recovery not saved.");
+      if (res.data.insertedId) {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Your recovery info has been saved",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        onClose(); // Close the modal
+      } else {
+        throw new Error("Recovery not saved.");
+      }
+    } catch (error) {
+      console.error("Recovery submit failed:", error);
+      Swal.fire("Error", "Failed to submit recovery info. Try again.", "error");
     }
-  } catch (error) {
-    console.error("Recovery submit failed:", error);
-    Swal.fire("Error", "Failed to submit recovery info. Try again.", "error");
-  }
-};
+  };
   return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full">
         <h3 className="text-xl font-bold mb-4">Submit Recovery Info</h3>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-semibold mb-1">Recovered Location</label>
+            <label className="block font-semibold mb-1">
+              Recovered Location
+            </label>
             <input
               type="text"
               value={recoveredLocation}
