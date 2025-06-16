@@ -1,6 +1,11 @@
 FindLost - Lost & Found Recovery App
 A web platform to report, find, and recover lost items. This application allows users to log in, post about lost/found items, and view recovery stats.
 Live Site:
+Link: 
+Live Firebase URL: https://find-lost-app-38c76.web.app/
+Live Netlify URL : https://thunderous-peony-1bed36.netlify.app/
+
+
 
 ## Purpose:
 - Help users recover lost items
