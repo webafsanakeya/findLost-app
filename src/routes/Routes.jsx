@@ -1,0 +1,181 @@
+import { createBrowserRouter, Outlet } from "react-router";
+import MainLayout from "../layouts/MainLayout";
+import Home from "../pages/Home/Home";
+
+import Signup from "@/pages/JoinUs/Signup/SignUp";
+import DashboardLayout from "@/layouts/DashboardLayout";
+import CampDetails from "@/pages/CampDetails/CampDetails";
+import ErrorPage from "@/pages/ErrorPage";
+import PrivateRoute from "./PrivateRoute";
+import Statistics from "@/pages/Dashboard/Common/Statistics";
+import AddCamp from "@/pages/Dashboard/Organizer/AddCamp";
+
+import RegisteredCamp from "@/pages/Dashboard/Participant/RegisteredCamp";
+
+import Login from "@/pages/JoinUs/Login/Login";
+import Profile from "@/pages/Dashboard/Common/Profile";
+import ManageRegistered from "@/pages/Dashboard/Organizer/ManageRegistered";
+import AdminRoute from "./AdminRoute";
+import ManageUsers from "@/pages/Dashboard/Admin/ManageUsers";
+import OrganizerRoute from "./OrganizerRoute";
+import ManageCamps from "@/pages/Dashboard/Organizer/ManageCamps";
+
+import AvailableCamps from "@/components/Home/AvailableCamps";
+import ParticipantRoute from "./ParticipantRoute";
+import Analytics from "@/pages/Dashboard/Participant/Analytics";
+import PaymentHistory from "@/pages/Dashboard/Participant/PaymentHistory";
+import ParticipantProfile from "@/pages/Dashboard/Participant/ParticipantProfile";
+
+export const router = createBrowserRouter([
+  {
+    path: "/",
+    Component: MainLayout,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+        loader: () => fetch(`${import.meta.env.VITE_API_URL}/camps`),
+      },
+      {
+        path: "/available-camps",
+        element: <AvailableCamps />,
+        loader: () => fetch(`${import.meta.env.VITE_API_URL}/camps`),
+      },
+      {
+        path: "/camp/:id",
+        element: <CampDetails />,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <PrivateRoute>
+            <Statistics />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "add-camp",
+        element: (
+          <PrivateRoute>
+            <OrganizerRoute>
+              <AddCamp />
+            </OrganizerRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manage-camps",
+        element: (
+          <PrivateRoute>
+            <OrganizerRoute>
+              <ManageCamps></ManageCamps>
+            </OrganizerRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manage-users",
+        element: (
+          <PrivateRoute>
+            <AdminRoute>
+              <ManageUsers />
+            </AdminRoute>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "registered-camp",
+        element: (
+          <PrivateRoute>
+            <RegisteredCamp />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manage-registered",
+        element: (
+          <PrivateRoute>
+            <OrganizerRoute>
+              <ManageRegistered />
+            </OrganizerRoute>
+          </PrivateRoute>
+        ),
+      },
+    ],
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "participant",
+        element: (
+          <PrivateRoute>
+            <ParticipantRoute>
+              <Outlet />
+            </ParticipantRoute>
+          </PrivateRoute>
+        ),
+        children: [
+          {
+            index: true,
+            element: <Statistics />,
+          },
+          {
+            path: "analytics",
+            element: <Analytics />,
+          },
+          {
+            path: "participant-profile",
+            element: (
+              <PrivateRoute>
+                <ParticipantRoute>
+                  <ParticipantProfile />
+                </ParticipantRoute>
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "registered-camp",
+            element: <RegisteredCamp />,
+          },
+          {
+            path: "payment-history",
+            element: <PaymentHistory />,
+          },
+        ],
+      },
+    ],
+  },
+]);
