@@ -3,6 +3,7 @@ import Banner from "./Banner";
 import FindLostItems from "./FindLostItems";
 import BannerSlider from "./BannerSlider";
 import Faq from "../Faq/Faq";
+import HowItWorks from "./HowItWorks";
 
 const Home = () => {
   const itemsPromise = fetch(
@@ -16,7 +17,7 @@ const Home = () => {
         <FindLostItems itemsPromise={itemsPromise}></FindLostItems>
       </Suspense>
 
-      <BannerSlider></BannerSlider>
+      <HowItWorks />
       <Faq></Faq>
     </div>
   );

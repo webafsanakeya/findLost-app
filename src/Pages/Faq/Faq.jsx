@@ -1,68 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-const Faq = () => {
+const faqData = [
+  {
+    question: "How do I report a lost item?",
+    answer:
+      "Simply click on 'Post Lost Item' and fill out the form with a description and image. Our platform will help connect you with finders.",
+  },
+  {
+    question: "How can I claim a found item?",
+    answer:
+      "If someone reports a found item matching your lost item, you'll get a notification. Contact them safely via the platform to recover your belongings.",
+  },
+  {
+    question: "Is my personal information safe?",
+    answer:
+      "Yes! We never share your contact details publicly. Communication between finders and owners is handled securely through our platform.",
+  },
+  {
+    question: "Can I post multiple items?",
+    answer:
+      "Absolutely. You can post as many lost or found items as needed. Each item will get its own post and tracking.",
+  },
+];
+
+const FAQ = () => {
+  const [activeIndex, setActiveIndex] = useState(null);
+
+  const toggle = (index) => {
+    setActiveIndex(activeIndex === index ? null : index);
+  };
+
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
-      <h2 className="text-3xl font-bold text-center mb-8">Frequently Asked Questions</h2>
-      
+    <div className="max-w-4xl mx-auto p-6 lg:p-12">
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-8">
+        Frequently Asked Questions
+      </h2>
+
       <div className="space-y-4">
-        {/* Q1 */}
-        <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-md transition-all">
-          <input type="radio" name="faq" defaultChecked />
-          <div className="collapse-title font-semibold text-lg">
-            How do I report a lost item?
-          </div>
-          <div className="collapse-content text-sm text-gray-600">
-            To report a lost item, go to the “Report Item” page, fill in the details such as item name, description, location where it was lost, and upload an image if available. Once submitted, it will be reviewed and published on the lost items list.
-          </div>
-        </div>
+        {faqData.map((item, index) => (
+          <div key={index} className="border rounded-lg overflow-hidden shadow-sm">
+            <button
+              onClick={() => toggle(index)}
+              className="w-full text-left px-6 py-4 bg-gray-100 hover:bg-gray-200 flex justify-between items-center focus:outline-none"
+            >
+              <span className="font-semibold text-lg">{item.question}</span>
+              <span className="text-xl">{activeIndex === index ? "−" : "+"}</span>
+            </button>
 
-        {/* Q2 */}
-        <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-md transition-all">
-          <input type="radio" name="faq" />
-          <div className="collapse-title font-semibold text-lg">
-            How do I claim a found item listed on the website?
+            <AnimatePresence initial={false}>
+              {activeIndex === index && (
+                <motion.div
+                  key="content"
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="px-6 py-4 bg-white text-gray-700"
+                >
+                  {item.answer}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <div className="collapse-content text-sm text-gray-600">
-            If you see your lost item listed under “Found Items,” click “Claim” and submit a short verification form. The person who found it will review your claim and contact you through the system if it matches.
-          </div>
-        </div>
-
-        {/* Q3 */}
-        <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-md transition-all">
-          <input type="radio" name="faq" />
-          <div className="collapse-title font-semibold text-lg">
-            Can I edit or delete a post after submission?
-          </div>
-          <div className="collapse-content text-sm text-gray-600">
-            Yes. Go to “Manage My Items” (after logging in) where you can click view details for update or delete a post if the item is recovered or listed by mistake.
-          </div>
-        </div>
-
-        {/* Q4 */}
-        <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-md transition-all">
-          <input type="radio" name="faq" />
-          <div className="collapse-title font-semibold text-lg">
-            Do I need to create an account to use the website?
-          </div>
-          <div className="collapse-content text-sm text-gray-600">
-            Yes. Creating an account is required to submit, claim, or recover items. This helps us verify authenticity and maintain a safe environment.
-          </div>
-        </div>
-
-        {/* Q5 */}
-        <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-md transition-all">
-          <input type="radio" name="faq" />
-          <div className="collapse-title font-semibold text-lg">
-            Is this service free to use?
-          </div>
-          <div className="collapse-content text-sm text-gray-600">
-            Yes! The Find & Lost platform is completely free for all users. Our goal is to help people reunite with their lost belongings safely and quickly.
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default Faq;
+export default FAQ;

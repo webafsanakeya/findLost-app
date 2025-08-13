@@ -2,23 +2,33 @@ import React, { useState } from "react";
 import UseAuth from "../Hooks/UseAuth";
 import axios from "axios";
 import Swal from "sweetalert2";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AddLostFoundItem = () => {
   const { user } = UseAuth();
   const [photoUrl, setPhotoUrl] = useState("");
+  const [date, setDate] = useState(null);
+  const [postType, setPostType] = useState(""); // For button style selection
+  const [category, setCategory] = useState("");
 
   const handleAddPost = (e) => {
     e.preventDefault();
     const form = e.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+    data.date = date;
+    data.postType = postType;
+    data.category = category;
 
-    if (user?.photoUrl) {
-      data.user.userPhoto = user.photoUrl;
+    if (user?.photoURL) {
+      data.userPhoto = user.photoURL;
     }
-    //
-    console.log(data);
-    // save post to the database
+
+    // Validation
+    if (!postType) return Swal.fire({ icon: "error", title: "Select a post type" });
+    if (!category) return Swal.fire({ icon: "error", title: "Select a category" });
+
     axios
       .post("https://find-lost-server-plum.vercel.app/items", data)
       .then((res) => {
@@ -32,12 +42,19 @@ const AddLostFoundItem = () => {
           });
           form.reset();
           setPhotoUrl("");
+          setDate(null);
+          setPostType("");
+          setCategory("");
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
+        Swal.fire({ icon: "error", title: "Failed to save post" });
       });
   };
+
+  const categories = ["Dog", "Cat", "Bird", "Rabbit", "Other"];
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h2 className="text-3xl font-bold text-center mb-8 text-primary">
@@ -48,48 +65,46 @@ const AddLostFoundItem = () => {
         onSubmit={handleAddPost}
         className="space-y-6 bg-base-100 p-6 rounded-xl shadow-md"
       >
-        {/* Post Type */}
+        {/* Post Type Buttons */}
         <div>
           <label className="block text-lg font-medium mb-2">Post Type</label>
           <div className="flex gap-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="postType"
-                value="Lost"
-                className="radio"
-              />
-              <span>Lost</span>
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="postType"
-                value="Found"
-                className="radio"
-              />
-              <span>Found</span>
-            </label>
+            {["Lost", "Found"].map((type) => (
+              <button
+                type="button"
+                key={type}
+                onClick={() => setPostType(type)}
+                className={`px-4 py-2 rounded-lg border ${
+                  postType === type
+                    ? "bg-primary text-white border-primary"
+                    : "bg-white text-black border-gray-300"
+                }`}
+              >
+                {type}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Category */}
+        {/* Category Buttons */}
         <div>
           <label className="block text-lg font-medium mb-2">Category</label>
-          <select
-            name="category"
-            className="select select-bordered w-full"
-            defaultValue=""
-          >
-            <option disabled value="">
-              Select Category
-            </option>
-            <option>Dog</option>
-            <option>Cat</option>
-            <option>Bird</option>
-            <option>Rabbit</option>
-            <option>Other</option>
-          </select>
+          <div className="flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                type="button"
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={`px-4 py-2 rounded-lg border ${
+                  category === cat
+                    ? "bg-primary text-white border-primary"
+                    : "bg-white text-black border-gray-300"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Title */}
@@ -100,6 +115,7 @@ const AddLostFoundItem = () => {
             name="title"
             placeholder="e.g., Lost Golden Retriever in Banani"
             className="input input-bordered w-full"
+            required
           />
         </div>
 
@@ -111,6 +127,7 @@ const AddLostFoundItem = () => {
             className="textarea textarea-bordered w-full"
             rows="4"
             placeholder="Describe the item, where it was last seen, any identifiers..."
+            required
           ></textarea>
         </div>
 
@@ -122,22 +139,23 @@ const AddLostFoundItem = () => {
             name="location"
             placeholder="e.g., Banani Park, Dhaka"
             className="input input-bordered w-full"
+            required
           />
         </div>
 
-        {/* Date */}
+        {/* Date Picker */}
         <div>
-          <label className="block text-lg font-medium mb-2">
-            Date Lost or Found
-          </label>
-          <input
-            type="date"
-            name="date"
+          <label className="block text-lg font-medium mb-2">Date Lost or Found</label>
+          <DatePicker
+            selected={date}
+            onChange={(date) => setDate(date)}
             className="input input-bordered w-full"
+            placeholderText="Select Date"
+            required
           />
         </div>
 
-        {/* User Info */}
+        {/* Contact Info */}
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-lg font-medium mb-2">Your Name</label>
@@ -147,6 +165,7 @@ const AddLostFoundItem = () => {
               defaultValue={user?.displayName || ""}
               placeholder="Your full name"
               className="input input-bordered w-full"
+              required
             />
           </div>
           <div>
@@ -157,14 +176,13 @@ const AddLostFoundItem = () => {
               defaultValue={user?.email || ""}
               placeholder="you@example.com"
               className="input input-bordered w-full"
+              required
             />
           </div>
         </div>
 
-        {/* Optional: Send user's photo */}
-        {user?.photoURL && (
-          <input type="hidden" name="userPhoto" value={user.photoURL} />
-        )}
+        {/* Optional user photo */}
+        {user?.photoURL && <input type="hidden" name="userPhoto" value={user.photoURL} />}
 
         {/* Image URL */}
         <div>

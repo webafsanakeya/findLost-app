@@ -7,9 +7,12 @@ import Swal from "sweetalert2";
 const RecoveryModal = ({ itemId, user, onClose }) => {
   const [recoveredLocation, setRecoveredLocation] = useState("");
   const [recoveredDate, setRecoveredDate] = useState(new Date());
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const recoveryData = {
       itemId,
       recoveredLocation,
@@ -20,29 +23,49 @@ const RecoveryModal = ({ itemId, user, onClose }) => {
         photoURL: user?.photoURL,
       },
     };
+
     try {
+      // Check if the item is already recovered
+      const itemRes = await axios.get(`https://find-lost-server-plum.vercel.app/items/${itemId}`);
+      if (itemRes.data.status === "recovered") {
+        Swal.fire("Oops!", "This item is already recovered.", "info");
+        setIsSubmitting(false);
+        onClose();
+        return;
+      }
+
+      // Submit recovery info
       const res = await axios.post(
         "https://find-lost-server-plum.vercel.app/recoveries",
         recoveryData
       );
 
       if (res.data.insertedId) {
+        // Update item status to "recovered"
+        await axios.patch(
+          `https://find-lost-server-plum.vercel.app/items/${itemId}`,
+          { status: "recovered" }
+        );
+
         Swal.fire({
           position: "top-end",
           icon: "success",
-          title: "Your recovery info has been saved",
+          title: "Recovery info has been saved!",
           showConfirmButton: false,
           timer: 1500,
         });
-        onClose(); // Close the modal
+        onClose();
       } else {
         throw new Error("Recovery not saved.");
       }
     } catch (error) {
       console.error("Recovery submit failed:", error);
       Swal.fire("Error", "Failed to submit recovery info. Try again.", "error");
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg p-6 max-w-md w-full">
@@ -50,9 +73,7 @@ const RecoveryModal = ({ itemId, user, onClose }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-semibold mb-1">
-              Recovered Location
-            </label>
+            <label className="block font-semibold mb-1">Recovered Location</label>
             <input
               type="text"
               value={recoveredLocation}
@@ -95,14 +116,16 @@ const RecoveryModal = ({ itemId, user, onClose }) => {
               type="button"
               onClick={onClose}
               className="px-4 py-2 rounded border border-gray-400 hover:bg-gray-100"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
               className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
+              disabled={isSubmitting}
             >
-              Submit
+              {isSubmitting ? "Submitting..." : "Submit"}
             </button>
           </div>
         </form>

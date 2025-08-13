@@ -12,21 +12,19 @@ import ViewItems from "../ViewItems/ViewItems";
 import AllItems from "../Pages/AllItems/AllItems";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import Faq from "../Pages/Faq/Faq";
+import ManageMyItemsWithModal from "../Pages/ManageMyItemsWithModal";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    Component: RootLayOut,
+    element: <RootLayOut />,
     children: [
-      {
-        index: true,
-        Component: Home,
-      },
+      { index: true, element: <Home /> },
       {
         path: "/items/:id",
         element: (
           <PrivateRoute>
-            <ItemDetails></ItemDetails>
+            <ItemDetails />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
@@ -36,7 +34,7 @@ const router = createBrowserRouter([
         path: "/allRecovered",
         element: (
           <PrivateRoute>
-            <MyRecoveries></MyRecoveries>
+            <MyRecoveries />
           </PrivateRoute>
         ),
       },
@@ -44,27 +42,32 @@ const router = createBrowserRouter([
         path: "/addItems",
         element: (
           <PrivateRoute>
-            <AddLostFoundItem></AddLostFoundItem>
+            <AddLostFoundItem />
           </PrivateRoute>
         ),
       },
-      {
-        path: "/allItems",
-        Component: AllItems,
-      },
+      { path: "/allItems", element: <AllItems /> },
       {
         path: "/myItems",
         element: (
           <PrivateRoute>
-            <ManageMyItems></ManageMyItems>
+            <ManageMyItems />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/myItemsModal",
+        element:(
+          <PrivateRoute>
+            <ManageMyItemsWithModal />
+          </PrivateRoute>
+        )
       },
       {
         path: "/recoveries/:item_id",
         element: (
           <PrivateRoute>
-            <ViewItems></ViewItems>
+            <ViewItems />
           </PrivateRoute>
         ),
         loader: ({ params }) =>
@@ -72,23 +75,10 @@ const router = createBrowserRouter([
             `https://find-lost-server-plum.vercel.app/recoveries/item/${params.item_id}`
           ),
       },
-
-      {
-        path: "/register",
-        Component: Register,
-      },
-      {
-        path: "/logIn",
-        Component: LogIn,
-      },
-      {
-        path: "/faq",
-        Component: Faq,
-      },
-      {
-        path: "*",
-        Component: ErrorPage,
-      },
+      { path: "/register", element: <Register /> },
+      { path: "/logIn", element: <LogIn /> },
+      { path: "/faq", element: <Faq /> },
+      { path: "*", element: <ErrorPage /> },
     ],
   },
 ]);
