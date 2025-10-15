@@ -16,14 +16,14 @@ A modern web platform to **report, find, and recover lost items**. Users can log
 
 ## 📸 Screenshots
 
-### Login / Signup Page
-![Login Page](https://raw.githubusercontent.com/webafsanakeya/perfume/77e12d6191135c20ba38e7b2f75a3e836cf7295c/perfume-homepage2.png)
+### Login/Register Page
+![Login Page](https://raw.githubusercontent.com/webafsanakeya/findLost-app/633f9bb60a862085b198d5af24cebe62896795d1/findlost-app-register.png)
 
 ### Home Page
-![Home Page](https://github.com/yourusername/perfume-app-store/blob/main/screenshots/perfume-home.png?raw=true)
+![Home Page](https://raw.githubusercontent.com/webafsanakeya/findLost-app/633f9bb60a862085b198d5af24cebe62896795d1/findlost-app-home.png)
 
-### Shop Page
-![Shop Page](https://github.com/yourusername/perfume-app-store/blob/main/screenshots/perfume-shop.png?raw=true)
+### Add Lost or Found Item Page
+![Shop Page](https://raw.githubusercontent.com/webafsanakeya/findLost-app/633f9bb60a862085b198d5af24cebe62896795d1/findlost-app-addLostItem.png)
 
 ---
 
