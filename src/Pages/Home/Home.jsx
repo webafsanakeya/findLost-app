@@ -1,9 +1,11 @@
 import React, { Suspense } from "react";
 import Banner from "./Banner";
 import FindLostItems from "./FindLostItems";
-import BannerSlider from "./BannerSlider";
+
 import Faq from "../Faq/Faq";
 import HowItWorks from "./HowItWorks";
+import Newsletter from "./Newsletter";
+import Reviews from "./Reviews";
 
 const Home = () => {
   const itemsPromise = fetch(
@@ -18,6 +20,8 @@ const Home = () => {
       </Suspense>
 
       <HowItWorks />
+      <Reviews />
+      <Newsletter />
       <Faq></Faq>
     </div>
   );

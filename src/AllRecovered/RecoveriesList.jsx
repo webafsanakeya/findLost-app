@@ -7,11 +7,19 @@ const RecoveriesList = ({ myRecoveriesPromise }) => {
   const [isTableLayout, setIsTableLayout] = useState(true);
 
   if (!Array.isArray(recoveries)) {
-    return <p className="text-center text-red-500 p-4">Something went wrong loading recoveries.</p>;
+    return (
+      <p className="text-center text-red-500 p-4">
+        Something went wrong loading recoveries.
+      </p>
+    );
   }
 
   if (recoveries.length === 0) {
-    return <p className="text-center text-gray-500 p-4">No recoveries found.</p>;
+    return (
+      <p className="text-center text-gray-500 p-4">
+        No recoveries found.
+      </p>
+    );
   }
 
   return (
@@ -23,7 +31,7 @@ const RecoveriesList = ({ myRecoveriesPromise }) => {
 
       <button
         onClick={() => setIsTableLayout(!isTableLayout)}
-        className="btn btn-primary my-4 px-4 py-2 rounded"
+        className="btn btn-primary my-4 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
       >
         {isTableLayout ? "Show Cards" : "Show Table"}
       </button>
@@ -42,37 +50,72 @@ const RecoveriesList = ({ myRecoveriesPromise }) => {
             </thead>
             <tbody>
               {recoveries.map((recovery, index) => (
-                <ItemRecoveriesRows key={recovery._id} index={index} recovery={recovery} />
+                <ItemRecoveriesRows
+                  key={recovery._id}
+                  index={index}
+                  recovery={recovery}
+                />
               ))}
             </tbody>
           </table>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {recoveries.map((recovery) => (
-            <div
-              key={recovery._id}
-              className="border p-4 rounded shadow hover:shadow-lg transition duration-200"
-            >
-              <img
-                src={recovery.itemImage || "https://via.placeholder.com/150"}
-                alt={recovery.itemName || "Item Image"}
-                className="w-full h-40 object-cover rounded mb-3"
-              />
-              <h4 className="text-lg font-semibold">{recovery.itemName}</h4>
-              <p className="text-gray-600">Category: {recovery.itemCategory}</p>
-              <p className="text-gray-600">
-                Recovered On: {new Date(recovery.recoveredDate).toLocaleDateString()}
-              </p>
-              <p className="text-gray-600">Recovered By: {recovery.recoveredBy?.name || "Unknown"}</p>
-              <Link
-                to={`/recoveries/${recovery._id}`}
-                className="mt-2 inline-block text-blue-600 hover:text-blue-800 font-medium underline"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {recoveries.map((recovery) => {
+            const imageSrc =
+              recovery.itemImage ||
+              recovery.image ||
+              "/placeholder.jpg";
+
+            return (
+              <div
+                key={recovery._id}
+                className="border p-4 rounded shadow hover:shadow-lg transition duration-200 flex flex-col"
               >
-                View Details
-              </Link>
-            </div>
-          ))}
+                <img
+                  src={imageSrc}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/placeholder.jpg";
+                  }}
+                  alt={recovery.itemName || "Recovered Item"}
+                  className="w-full h-auto max-h-60 object-cover rounded mb-3"
+                />
+                <h4 className="text-lg font-semibold">{recovery.itemName}</h4>
+                <p className="text-gray-600">
+                  Category: {recovery.itemCategory}
+                </p>
+                <p className="text-gray-600">
+                  Recovered On:{" "}
+                  {new Date(recovery.recoveredDate).toLocaleDateString()}
+                </p>
+                <div className="mt-2 flex items-center gap-2">
+                  <img
+                    src={recovery.recoveredBy?.photoURL || "/placeholder.jpg"}
+                    alt={recovery.recoveredBy?.name || "Recovered By"}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <div>
+                    <p className="font-semibold text-sm">
+                      {recovery.recoveredBy?.name || "Unknown"}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {recovery.recoveredBy?.email || "N/A"}
+                    </p>
+                    <span className="badge badge-success badge-xs mt-1">
+                      Recovered
+                    </span>
+                  </div>
+                </div>
+                <Link
+                  to={`/recoveries/${recovery._id}`}
+                  className="mt-auto inline-block text-blue-600 hover:text-blue-800 font-medium underline"
+                >
+                  View Details
+                </Link>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

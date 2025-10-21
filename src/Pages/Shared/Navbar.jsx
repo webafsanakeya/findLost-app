@@ -1,138 +1,88 @@
-import React, { useContext } from 'react';
-import { NavLink } from 'react-router';
-import { AuthContext } from '../../Contexts/AuthContext/AuthContext';
+import React, { useContext, useState } from "react";
+import { NavLink } from "react-router";
+import { AuthContext } from "../../Contexts/AuthContext/AuthContext";
+
+import { FaSun, FaMoon, FaBars, FaTimes } from "react-icons/fa";
+import { ThemeContext } from "../../Contexts/ThemeContext/ThemeContext";
 
 
 const Navbar = () => {
   const { user, logOutUser } = useContext(AuthContext);
-
-  const handleLogOut = async () => {
-    try {
-      await logOutUser();
-      console.log('User logged out');
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { darkMode, toggleTheme } = useContext(ThemeContext);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinkStyle = ({ isActive }) =>
     isActive
-      ? 'text-blue-700 font-semibold border-b-2 border-blue-700 transition duration-150'
-      : 'text-gray-700 hover:text-blue-600 transition duration-150';
-
-  const links = (
-    <>
-      <li>
-        <NavLink to="/" className={navLinkStyle}>
-          Home
-        </NavLink>
-      </li>
-      {user && (
-        <>
-          <li>
-            <NavLink to="/allRecovered" className={navLinkStyle}>
-              My Items
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/addItems" className={navLinkStyle}>
-              Add Lost & Found
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/myItems" className={navLinkStyle}>
-              Manage My Items
-            </NavLink>
-          </li>
-        </>
-      )}
-      <li>
-        <NavLink to="/faq" className={navLinkStyle}>
-          FAQ
-        </NavLink>
-      </li>
-    </>
-  );
+      ? "text-white font-semibold border-b-2 border-white"
+      : "text-gray-200 hover:text-white";
 
   return (
-    <div className="navbar bg-white shadow-md sticky top-0 z-50 px-4 py-3">
-      {/* Logo */}
-      <div className="navbar-start">
-        <NavLink
-          to="/"
-          className="text-2xl md:text-3xl font-bold text-blue-700 flex items-center gap-2"
-        >
+    <nav className={`w-screen sticky top-0 z-50 shadow-lg ${darkMode ? "bg-gray-800" : "bg-gradient-to-r from-purple-800 to-indigo-900"}`}>
+      <div className="flex justify-between items-center px-6 py-3 max-w-7xl mx-auto">
+        <NavLink to="/" className="text-2xl font-bold text-white flex items-center gap-2">
           🔍 FindLost
         </NavLink>
-      </div>
 
-      {/* Desktop Menu */}
-      <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 gap-6">{links}</ul>
-      </div>
+        {/* Desktop menu */}
+        <ul className="hidden lg:flex gap-6">
+          <li><NavLink to="/" className={navLinkStyle}>Home</NavLink></li>
+          {user && (
+            <>
+              <li><NavLink to="/allRecovered" className={navLinkStyle}>My Items</NavLink></li>
+              <li><NavLink to="/addItems" className={navLinkStyle}>Add Lost & Found</NavLink></li>
+              <li><NavLink to="/myItems" className={navLinkStyle}>Manage My Items</NavLink></li>
+            </>
+          )}
+          <li><NavLink to="/faq" className={navLinkStyle}>FAQ</NavLink></li>
+        </ul>
 
-      {/* Mobile Dropdown */}
-      <div className="navbar-start lg:hidden">
-        <div className="dropdown">
-          <label tabIndex={0} className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </label>
-          <ul
-            tabIndex={0}
-            className="menu menu-compact dropdown-content mt-3 p-3 shadow bg-white rounded-box w-52 gap-2"
-          >
-            {links}
-          </ul>
+        {/* Right section */}
+        <div className="hidden lg:flex items-center gap-4">
+          <button onClick={toggleTheme} className="p-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200">
+            {darkMode ? <FaSun /> : <FaMoon />}
+          </button>
+          {user ? (
+            <button onClick={logOutUser} className="px-4 py-1 rounded-lg bg-gradient-to-r from-purple-700 to-indigo-800 text-white">
+              Logout
+            </button>
+          ) : (
+            <>
+              <NavLink to="/register" className="px-4 py-1 rounded-lg bg-gray-500 text-white">Register</NavLink>
+              <NavLink to="/logIn" className="px-4 py-1 rounded-lg bg-purple-600 text-white">Login</NavLink>
+            </>
+          )}
+        </div>
+
+        {/* Mobile menu toggle */}
+        <div className="lg:hidden">
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="text-white text-2xl">
+            {mobileOpen ? <FaTimes /> : <FaBars />}
+          </button>
         </div>
       </div>
 
-      {/* User/Profile Section */}
-      <div className="navbar-end flex items-center gap-4">
-        {user ? (
-          <div className="flex items-center gap-3">
-            {user.photoURL ? (
-              <div className="tooltip tooltip-bottom" data-tip={user.displayName || 'User'}>
-                <img
-                  src={user.photoURL}
-                  alt="Profile"
-                  className="w-10 h-10 rounded-full border-2 border-blue-700 object-cover"
-                />
-              </div>
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center font-bold text-lg">
-                {user.displayName?.charAt(0)}
-              </div>
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className={`${darkMode ? "bg-gray-800" : "bg-gradient-to-r from-purple-800 to-indigo-900"} lg:hidden px-6 py-4`}>
+          <ul className="flex flex-col gap-4">
+            <li><NavLink to="/" className={navLinkStyle}>Home</NavLink></li>
+            {user && (
+              <>
+                <li><NavLink to="/allRecovered" className={navLinkStyle}>My Items</NavLink></li>
+                <li><NavLink to="/addItems" className={navLinkStyle}>Add Lost & Found</NavLink></li>
+                <li><NavLink to="/myItems" className={navLinkStyle}>Manage My Items</NavLink></li>
+              </>
             )}
-            <span className="font-medium hidden sm:inline">{user.displayName}</span>
-            <button onClick={handleLogOut} className="btn btn-sm btn-outline text-blue-700 border-blue-700 hover:bg-blue-700 hover:text-white">
-              Logout
-            </button>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <NavLink to="/register" className="btn btn-outline btn-sm text-blue-700 border-blue-700 hover:bg-blue-700 hover:text-white">
-              Register
-            </NavLink>
-            <NavLink to="/logIn" className="btn btn-primary btn-sm bg-blue-700 hover:bg-blue-800">
-              Login
-            </NavLink>
-          </div>
-        )}
-      </div>
-    </div>
+            <li><NavLink to="/faq" className={navLinkStyle}>FAQ</NavLink></li>
+            <li>
+              <button onClick={toggleTheme} className="p-2 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 w-full">
+                {darkMode ? <FaSun /> : <FaMoon />} Toggle Theme
+              </button>
+            </li>
+          </ul>
+        </div>
+      )}
+    </nav>
   );
 };
 

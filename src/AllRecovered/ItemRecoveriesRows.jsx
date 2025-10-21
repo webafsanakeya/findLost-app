@@ -4,70 +4,87 @@ import moment from "moment";
 
 const ItemRecoveriesRows = ({ recovery, index }) => {
   const {
-    recoveredLocation,
-    recoveredDate,
+    itemName,
     itemCategory,
     itemImage,
+    recoveredDate,
     recoveredBy,
+    recoveredLocation,
     _id,
+    status,
   } = recovery;
 
   return (
-    <tr className="hover:bg-base-200 transition-all duration-200">
-      <th>{index + 1}</th>
+    <tr className="hover:bg-gray-50 transition-all duration-200">
+      {/* Index */}
+      <th className="p-3">{index + 1}</th>
 
-      {/* Item Image & Category */}
-      <td>
-        <div className="flex items-center gap-3">
-          <div className="avatar">
-            <div className="mask mask-squircle w-12 h-12">
-              <img
-                src={itemImage || "https://via.placeholder.com/150"}
-                alt={itemCategory || "Item Image"}
-              />
-            </div>
-          </div>
-          <div>
-            <div className="font-semibold">{itemCategory || "N/A"}</div>
-            <div className="text-sm text-gray-500">{recoveredLocation || "Unknown location"}</div>
-          </div>
+      {/* Item */}
+      <td className="p-3 flex items-center gap-3">
+        <div className="w-12 h-12 flex-shrink-0">
+          <img
+            src={itemImage || "/placeholder.jpg"}
+            alt={itemName || "Item"}
+            className="w-full h-full object-cover rounded"
+          />
+        </div>
+        <div>
+          <p className="font-semibold">{itemName || "Unknown Item"}</p>
+          <p className="text-sm text-gray-500">{itemCategory || "N/A"}</p>
         </div>
       </td>
 
       {/* Recovered Date */}
-      <td>
+      <td className="p-3">
         <span className="badge badge-info badge-sm">
-          {recoveredDate ? moment(recoveredDate).format("MMMM DD, YYYY") : "N/A"}
+          {recoveredDate
+            ? moment(recoveredDate).format("MMMM DD, YYYY")
+            : "N/A"}
         </span>
       </td>
 
-      {/* Recovered By Info */}
-      <td>
-        <div className="flex items-center gap-3">
-          <div className="avatar">
-            <div className="mask mask-squircle w-10 h-10">
-              <img
-                src={recoveredBy?.photoURL || "https://via.placeholder.com/40"}
-                alt={recoveredBy?.name || "Recovered By"}
-              />
-            </div>
-          </div>
-          <div>
-            <div className="font-medium">{recoveredBy?.name || "Unknown"}</div>
-            <div className="text-sm text-gray-500">{recoveredBy?.email || "N/A"}</div>
-          </div>
+      {/* Recovered By */}
+      <td className="p-3 flex items-center gap-3">
+        <div className="w-10 h-10 flex-shrink-0">
+          <img
+            src={recoveredBy?.photoURL || "/placeholder.jpg"}
+            alt={recoveredBy?.name || "Recovered By"}
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
+        <div>
+          <p className="font-medium">{recoveredBy?.name || "Unknown"}</p>
+          <p className="text-sm text-gray-500">{recoveredBy?.email || "N/A"}</p>
         </div>
       </td>
 
+      {/* Location */}
+      <td className="p-3 text-gray-600">{recoveredLocation || "Unknown"}</td>
+
+      {/* Status */}
+      <td className="p-3">
+        <span
+          className={`badge ${
+            status === "Updated"
+              ? "badge-success"
+              : status === "Deleted"
+              ? "badge-error"
+              : "badge-ghost"
+          }`}
+        >
+          {status || "Pending"}
+        </span>
+      </td>
+
       {/* Action */}
-      <th>
+      <td className="p-3">
         <Link
           to={`/recoveries/${_id}`}
           className="btn btn-sm btn-outline btn-primary"
         >
-          Details
+          View
         </Link>
-      </th>
+      </td>
     </tr>
   );
 };

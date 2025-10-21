@@ -42,7 +42,7 @@ export default function BannerSlider() {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <div className="relative w-full aspect-[16/9] max-h-[600px] overflow-hidden">
+    <div className="relative w-screen aspect-[18/12]">
       <AnimatePresence mode="wait">
         <motion.div
           key={slides[current].id}
@@ -55,7 +55,7 @@ export default function BannerSlider() {
           <img
             src={slides[current].image}
             alt={slides[current].title}
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-contain object-center"
           />
           <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
             <h2 className="text-lg sm:text-3xl md:text-5xl font-bold text-white drop-shadow-lg">

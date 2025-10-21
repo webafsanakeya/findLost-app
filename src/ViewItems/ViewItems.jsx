@@ -1,81 +1,107 @@
-import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useLoaderData, useParams } from "react-router";
 import Swal from "sweetalert2";
+import axios from "axios";
+import moment from "moment";
 
 const ViewItems = () => {
   const { item_id } = useParams();
-  const recoveries = useLoaderData();
+  const initialRecoveries = useLoaderData();
 
-  const handleStatusChange = (e, recover_id) => {
-    // console.log(e.target.value, recover_id);
+  // Local state to manage dynamic updates
+  const [recoveries, setRecoveries] = useState(initialRecoveries || []);
 
-    axios
-      .patch(
+  const handleStatusChange = async (e, recover_id) => {
+    const newStatus = e.target.value;
+
+    try {
+      const res = await axios.patch(
         `https://find-lost-server-plum.vercel.app/recoveries/${recover_id}`,
-        { status: e.target.value }
-      )
-      .then((res) => {
-        console.log(res.data);
-        if (res.data.modifiedCount) {
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "Item Post Status updated",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        { status: newStatus }
+      );
+
+      if (res.data.modifiedCount) {
+        // Update local state to reflect new status
+        setRecoveries((prev) =>
+          prev.map((rec) =>
+            rec._id === recover_id ? { ...rec, status: newStatus } : rec
+          )
+        );
+
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Item status updated!",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Failed to update status", "error");
+    }
   };
+
+  if (!recoveries || recoveries.length === 0) {
+    return (
+      <p className="text-center text-gray-500 py-8">
+        No recoveries found for: {item_id}
+      </p>
+    );
+  }
+
   return (
-    <div>
-      <h2 className="text-3xl">
+    <div className="p-4">
+      <h2 className="text-3xl font-semibold mb-6">
         {recoveries.length} Items for: {item_id}
       </h2>
 
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
+      <div className="overflow-x-auto rounded-lg shadow border border-gray-200 bg-white">
+        <table className="table-auto w-full text-left text-gray-600">
+          <thead className="bg-blue-50 text-blue-700 uppercase text-xs tracking-wider">
             <tr>
-              <th>#</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Recovered Location</th>
-              <th>Recovered Date</th>
-              <th>Photo</th>
-              <th>Status</th>
+              <th className="p-3">#</th>
+              <th className="p-3">Name</th>
+              <th className="p-3">Email</th>
+              <th className="p-3">Location</th>
+              <th className="p-3">Recovered Date</th>
+              <th className="p-3">Photo</th>
+              <th className="p-3">Status</th>
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
-            {recoveries.map((recovery) => (
-              <tr key={recovery._id}>
-                <th>1</th>
-                <td>{recovery.recoveredBy.name}</td>
-                <td>{recovery.recoveredBy.email}</td>
-                <td>{recovery.recoveredLocation}</td>
-                <td>{new Date(recovery.recoveredDate).toLocaleDateString()}</td>
-                <td>
+            {recoveries.map((recovery, index) => (
+              <tr
+                key={recovery._id}
+                className="hover:bg-base-200 transition-all duration-200"
+              >
+                <td className="p-3 font-medium">{index + 1}</td>
+                <td className="p-3">{recovery.recoveredBy?.name || "Unknown"}</td>
+                <td className="p-3">{recovery.recoveredBy?.email || "N/A"}</td>
+                <td className="p-3">{recovery.recoveredLocation || "Unknown"}</td>
+                <td className="p-3">
+                  {recovery.recoveredDate
+                    ? moment(recovery.recoveredDate).format("MMMM DD, YYYY")
+                    : "N/A"}
+                </td>
+                <td className="p-3">
                   <img
-                    src={recovery.recoveredBy.photoURL}
-                    alt="Recovered By"
+                    src={recovery.recoveredBy?.photoURL || "https://via.placeholder.com/40"}
+                    alt={recovery.recoveredBy?.name || "Recovered By"}
                     className="w-12 h-12 rounded-full"
                   />
                 </td>
-                <td>
+                <td className="p-3">
                   <select
+                    value={recovery.status || ""}
                     onChange={(e) => handleStatusChange(e, recovery._id)}
-                    defaultValue={recovery.status}
-                    className="select"
+                    className="select select-sm"
                   >
-                    <option disabled={true}>Update Status</option>
-                    <option>Updated</option>
-                    <option>Deleted</option>
+                    <option disabled value="">
+                      Update Status
+                    </option>
+                    <option value="Updated">Updated</option>
+                    <option value="Deleted">Deleted</option>
                   </select>
                 </td>
               </tr>
