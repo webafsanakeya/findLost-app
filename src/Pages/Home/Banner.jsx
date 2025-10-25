@@ -1,3 +1,4 @@
+// BannerSlider.jsx
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import items1 from "../../assets/items/items1.jpg";
@@ -36,13 +37,12 @@ export default function BannerSlider() {
     return () => clearInterval(timer);
   }, []);
 
-  const nextSlide = () =>
-    setCurrent((prev) => (prev + 1) % slides.length);
+  const nextSlide = () => setCurrent((prev) => (prev + 1) % slides.length);
   const prevSlide = () =>
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <div className="relative w-screen aspect-[18/12]">
+    <div className="relative w-screen h-[80vh] sm:h-[90vh] md:h-[100vh] overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={slides[current].id}
@@ -55,13 +55,13 @@ export default function BannerSlider() {
           <img
             src={slides[current].image}
             alt={slides[current].title}
-            className="w-full h-full object-contain object-center"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
-            <h2 className="text-lg sm:text-3xl md:text-5xl font-bold text-white drop-shadow-lg">
+          <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center px-6">
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold text-white drop-shadow-lg">
               {slides[current].title}
             </h2>
-            <p className="mt-2 text-xs sm:text-lg md:text-xl text-gray-200 max-w-2xl">
+            <p className="mt-4 text-sm sm:text-lg md:text-2xl text-gray-200 max-w-3xl drop-shadow-md">
               {slides[current].description}
             </p>
           </div>
@@ -71,23 +71,23 @@ export default function BannerSlider() {
       {/* Controls */}
       <button
         onClick={prevSlide}
-        className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full"
+        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition"
       >
         ❮
       </button>
       <button
         onClick={nextSlide}
-        className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-2 rounded-full"
+        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition"
       >
         ❯
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
         {slides.map((_, index) => (
           <div
             key={index}
-            className={`w-3 h-3 rounded-full cursor-pointer ${
+            className={`w-4 h-4 rounded-full cursor-pointer transition-all ${
               current === index ? "bg-white" : "bg-gray-400"
             }`}
             onClick={() => setCurrent(index)}

@@ -57,11 +57,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/myItemsModal",
-        element:(
+        element: (
           <PrivateRoute>
             <ManageMyItemsWithModal />
           </PrivateRoute>
-        )
+        ),
       },
       {
         path: "/recoveries/:item_id",
