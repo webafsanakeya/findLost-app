@@ -1,15 +1,16 @@
-import React, { use } from 'react';
-import { AuthContext } from '../../Contexts/AuthContext/AuthContext';
+import React, { useContext } from 'react';
+
+import { useLocation, useNavigate } from 'react-router'; 
 import logInLottie from '../../assets/lotties/logIn.json';
 import Lottie from 'lottie-react';
 import SocialLogIn from '../Shared/SocialLogIn';
-import { useLocation, useNavigate } from 'react-router';
+import { AuthContext } from '../../Contexts/AuthContext/AuthContext';
 
 const LogIn = () => {
-  const { logInUser } = use(AuthContext);
+  const { logInUser } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state || '/';
+  const from = location.state?.from?.pathname || '/';
 
   const handleLogIn = async (e) => {
     e.preventDefault();
@@ -18,9 +19,9 @@ const LogIn = () => {
     const password = form.password.value;
 
     try {
-      const { user } = await logInUser(email, password);
-      console.log('Logged in user:', user);
-      navigate(from);
+      const userCredential = await logInUser(email, password);
+      console.log('Logged in user:', userCredential.user);
+      navigate(from, { replace: true }); // redirect after login
     } catch (error) {
       console.error('Login error:', error);
     }

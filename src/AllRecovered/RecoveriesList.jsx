@@ -4,12 +4,17 @@ import ItemRecoveriesRows from "./ItemRecoveriesRows";
 
 const RecoveriesList = ({ myRecoveriesPromise }) => {
   const recoveries = use(myRecoveriesPromise);
+
   const [isTableLayout, setIsTableLayout] = useState(true);
+  const [sortField, setSortField] = useState("recoveredDate");
+  const [sortOrder, setSortOrder] = useState("desc"); // 'asc' or 'desc'
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   if (!Array.isArray(recoveries)) {
     return (
       <p className="text-center text-red-500 p-4">
-        Something went wrong loading recoveries.
+        Failed to load recoveries.
       </p>
     );
   }
@@ -17,24 +22,57 @@ const RecoveriesList = ({ myRecoveriesPromise }) => {
   if (recoveries.length === 0) {
     return (
       <p className="text-center text-gray-500 p-4">
-        No recoveries found.
+        You have no recoveries yet.
       </p>
     );
   }
 
-  return (
-    <div className="p-4 md:p-8">
-      <h3 className="text-xl font-semibold mb-2">
-        Recovered By: {recoveries[0]?.recoveredBy?.email || "No email found"}
-      </h3>
-      <h3 className="text-lg mb-4">Total Recoveries: {recoveries.length}</h3>
+  // Sorting
+  const sortedRecoveries = [...recoveries].sort((a, b) => {
+    const fieldA = a[sortField] || "";
+    const fieldB = b[sortField] || "";
+    if (fieldA < fieldB) return sortOrder === "asc" ? -1 : 1;
+    if (fieldA > fieldB) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
 
-      <button
-        onClick={() => setIsTableLayout(!isTableLayout)}
-        className="btn btn-primary my-4 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-      >
-        {isTableLayout ? "Show Cards" : "Show Table"}
-      </button>
+  // Pagination
+  const totalPages = Math.ceil(sortedRecoveries.length / itemsPerPage);
+  const paginatedRecoveries = sortedRecoveries.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  return (
+    <div>
+      <div className="flex flex-wrap items-center justify-between mb-4">
+        <div>
+          <button
+            onClick={() => setIsTableLayout(!isTableLayout)}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition mr-2"
+          >
+            {isTableLayout ? "Show Cards" : "Show Table"}
+          </button>
+          <select
+            value={sortField}
+            onChange={(e) => setSortField(e.target.value)}
+            className="px-2 py-1 border rounded mr-2"
+          >
+            <option value="recoveredDate">Recovered Date</option>
+            <option value="itemName">Item Name</option>
+            <option value="itemCategory">Category</option>
+          </select>
+          <button
+            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+            className="px-2 py-1 border rounded"
+          >
+            {sortOrder === "asc" ? "Asc" : "Desc"}
+          </button>
+        </div>
+        <p className="text-gray-600">
+          Page {currentPage} of {totalPages}
+        </p>
+      </div>
 
       {isTableLayout ? (
         <div className="overflow-x-auto rounded-lg shadow border border-gray-200 bg-white">
@@ -49,10 +87,10 @@ const RecoveriesList = ({ myRecoveriesPromise }) => {
               </tr>
             </thead>
             <tbody>
-              {recoveries.map((recovery, index) => (
+              {paginatedRecoveries.map((recovery, index) => (
                 <ItemRecoveriesRows
                   key={recovery._id}
-                  index={index}
+                  index={(currentPage - 1) * itemsPerPage + index}
                   recovery={recovery}
                 />
               ))}
@@ -61,63 +99,76 @@ const RecoveriesList = ({ myRecoveriesPromise }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recoveries.map((recovery) => {
-            const imageSrc =
-              recovery.itemImage ||
-              recovery.image ||
-              "/placeholder.jpg";
-
-            return (
-              <div
-                key={recovery._id}
-                className="border p-4 rounded shadow hover:shadow-lg transition duration-200 flex flex-col"
-              >
+          {paginatedRecoveries.map((recovery) => (
+            <div
+              key={recovery._id}
+              className="border p-4 rounded shadow hover:shadow-lg transition flex flex-col"
+            >
+              <img
+                src={recovery.itemImage || "/placeholder.jpg"}
+                alt={recovery.itemName || "Recovered Item"}
+                className="w-full h-48 object-cover rounded mb-3"
+              />
+              <h4 className="text-lg font-semibold">{recovery.itemName}</h4>
+              <p className="text-gray-600">Category: {recovery.itemCategory}</p>
+              <p className="text-gray-600">
+                Recovered On: {new Date(recovery.recoveredDate).toLocaleDateString()}
+              </p>
+              <div className="mt-2 flex items-center gap-2">
                 <img
-                  src={imageSrc}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/placeholder.jpg";
-                  }}
-                  alt={recovery.itemName || "Recovered Item"}
-                  className="w-full h-auto max-h-60 object-cover rounded mb-3"
+                  src={recovery.recoveredBy?.photoURL || "/placeholder.jpg"}
+                  alt={recovery.recoveredBy?.name || "Recovered By"}
+                  className="w-10 h-10 rounded-full object-cover"
                 />
-                <h4 className="text-lg font-semibold">{recovery.itemName}</h4>
-                <p className="text-gray-600">
-                  Category: {recovery.itemCategory}
-                </p>
-                <p className="text-gray-600">
-                  Recovered On:{" "}
-                  {new Date(recovery.recoveredDate).toLocaleDateString()}
-                </p>
-                <div className="mt-2 flex items-center gap-2">
-                  <img
-                    src={recovery.recoveredBy?.photoURL || "/placeholder.jpg"}
-                    alt={recovery.recoveredBy?.name || "Recovered By"}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="font-semibold text-sm">
-                      {recovery.recoveredBy?.name || "Unknown"}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {recovery.recoveredBy?.email || "N/A"}
-                    </p>
-                    <span className="badge badge-success badge-xs mt-1">
-                      Recovered
-                    </span>
-                  </div>
+                <div>
+                  <p className="font-semibold text-sm">
+                    {recovery.recoveredBy?.name || "Unknown"}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {recovery.recoveredBy?.email || "N/A"}
+                  </p>
+                  <span className="badge badge-success badge-xs mt-1">Recovered</span>
                 </div>
-                <Link
-                  to={`/recoveries/${recovery._id}`}
-                  className="mt-auto inline-block text-blue-600 hover:text-blue-800 font-medium underline"
-                >
-                  View Details
-                </Link>
               </div>
-            );
-          })}
+              <Link
+                to={`/recoveries/${recovery._id}`}
+                className="mt-auto inline-block text-blue-600 hover:text-blue-800 font-medium underline"
+              >
+                View Details
+              </Link>
+            </div>
+          ))}
         </div>
       )}
+
+      {/* Pagination Controls */}
+      <div className="flex justify-center gap-2 mt-4">
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`px-3 py-1 border rounded ${
+              currentPage === i + 1 ? "bg-blue-600 text-white" : ""
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
